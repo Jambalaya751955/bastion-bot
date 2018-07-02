@@ -2,7 +2,8 @@ const XRegExp = require('xregexp');
 
 module.exports = function (setcodes) {
 	let Card = class Card {
-		constructor(datas) {
+		constructor(datas, db) {
+			this._db = db; //an array of names of the databases the card can be found in
 			this._code = datas[0];
 			this._ot = datas[1];
 			this._alias = datas[2];
@@ -53,6 +54,10 @@ module.exports = function (setcodes) {
 		}
 
 		//Getters
+		get db() {
+			return this._db;
+		}
+
 		get code() {
 			return this._code;
 		}
@@ -325,6 +330,14 @@ module.exports = function (setcodes) {
 						ind = index;
 					}
 				});
+				if (!ind) {
+					lines.forEach((key, index) => {
+						if (lines[index].indexOf("【") > -1) { //asian language card DBs don't split text the same way - they use these brackets for the headings.
+							ind = index;
+						}
+					});
+					lines.splice(ind, 0, "---");
+				}
 				if (ind) {
 					let re = XRegExp("\\p{L}[\\p{L} ]+\\p{L}");
 					let head1 = lines.slice(0, 1)[0];
@@ -339,6 +352,7 @@ module.exports = function (setcodes) {
 			return [this._desc];
 		}
 	};
+
 	//Data - has to be defined outside the class because JS is weird, but hey it works
 	Card.ots = {
 		"OCG": 0x1,

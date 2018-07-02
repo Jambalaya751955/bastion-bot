@@ -18,7 +18,8 @@ Thank you to the following users for their work on Bastion:
  - Becasita: For introducing me to the Yugipedia API.  
  - Dragon: For miscellaneous support, including promoting Bastion in numerous Discords servers and communication with DevPro for some alternate language databases.  
  - AntiMetaman: For supplying the high-quality card artwork used by the public version of Bastion.
- - The Ultimate HQ Card Project: For supplying card artwork for anime and manga cards. https://serenade87.deviantart.com/art/Yu-Gi-Oh-Ultimate-HQ-Card-Project-595260185
+ - The Ultimate HQ Card Project: For supplying card artwork for anime and manga cards. https://serenade87.deviantart.com/art/Yu-Gi-Oh-Ultimate-HQ-Card-Project-595260185  
+ - jambalaya and the HQ Japanese Card Project: For supplying an up-to-date Japanese language card database. https://duelistsunite.org/forum/topic/13472-the-hq-japanese-card-project-%E9%81%8A%E6%88%AF%E7%8E%8B-%E9%AB%98%E7%94%BB%E8%B3%AA-%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%82%AB%E3%83%BC%E3%83%89/  
  
 ## Commands  
 Bastion's primary purpose is a database of card information. Basic knowledge about relevant terms will be assumed in this section and the next. Note that Bastion's prefix is customisable - more information on that in the configuration section - this section assumes the default prefix of ".".  
@@ -92,6 +93,11 @@ Usage: `.search [text]|[args]`
   
 The `.search` command is similar to `.matches`, except it searches by card text. Unlike `.matches`, the card text must exactly contain the search phrase, though it is not case-sensitive.  
 
+### .viewmatch
+Usage: `.viewmatch [index]`
+
+The `.viewmatch` command allows you to search for a card in the results of a `.matches` or `.search` query without copying a result's name - simply enter the number that appears before it in the list.
+
 ### .set  
 Usage: `.set [name|setcode]`  
   
@@ -108,12 +114,17 @@ The `.deck` command reads the contents of a YGOPro `.ydk` file uploaded with the
 ### .strings  
 Usage: `.strings [card name/ID]|[lang]`  
   
-The `.strings` command searches for a card by name or YGOPro ID, and returns the database strings for that card - i.e., the customs messages assigned to it that a script can call on for effect descriptions or dialog boxes. If a language is specified, it will look for a card with a name like you typed in that language.  
+The `.strings` command searches for a card by name or YGOPro ID, and returns the database strings for that card - i.e., the custom messages assigned to it that a script can call on for effect descriptions or dialog boxes. If a language is specified, it will look for a card with a name like you typed in that language.  
   
 ### .skill  
 Usage: `.skill [skill name]`  
   
-The `.skill` command searches for a Skill, from Yu-Gi-Oh! Duel Links, and returns its name, description, and a list of which characters can obtain the Skill and how.  
+The `.skill` command searches for a Skill, from Yu-Gi-Oh! Duel Links, and returns its name, description, and a list of which characters can obtain the Skill and how. 
+
+### .dbfind
+Usage: `.dbfind [card name/ID]|[lang]`  
+
+The `.dbfind` command searches for a card by name or YGOPro ID, and returns the name of the card database that it is stored within. This is useful for scripters working with multiple databases and trying to find which one holds a certain card.  
   
 ### .top  
 Usage: `.top [number] [stat] [lang]`  
@@ -198,7 +209,8 @@ By default, the configuration file is called `config.json`, and is expected to b
 	"imageExt": "png",  
 	"scriptUrl": "",  
 	"scriptUrlAnime": "",  
-	"scriptUrlCustom": "",  
+	"scriptUrlCustom": "",
+	"scriptUrlBackup": [ "", "" ],  
 	"staticDBs": {  
 		"en": [ "cards.cdb" ]  
 	},  
@@ -258,7 +270,7 @@ By default, the configuration file is called `config.json`, and is expected to b
   
 `scriptUrlCustom` is a link to a source for custom card scripts. Bastion will append the ID of the card, then ".lua". This field is optional - if it is missing, Bastion will default to `scriptUrl`.  
   
-`scriptUrlBackup` is a link to a source for backup card scripts - if Bastion doesn't find a script at the first source specified, he'll try again here. Bastion will append the ID of the card, then ".lua". This field is optional - if it is missing, Bastion will not try to find backup scripts.  
+`scriptUrlBackup` is an array of links to sources for backup card scripts, ordered by priority - if Bastion doesn't find a script at the first source specified, he'll try again here from left to right. Bastion will append the ID of the card, then ".lua". This field is optional - if it is missing, Bastion will not try to find backup scripts.  
   
 `staticDBs` is an object of arrays of filenames for card databases Bastion will read, to be found in a folder called `dbs`. The keys of the object are language names. If two DBs have an entry with the same ID, for example because of "fix" DBs, the latest occurence in the array will be the final version of the entry that overwrites the others. This object is for base databases that should not be modified by the live update process - if you have anything stored in a GitHub repository, see below for fields that enable an automatic update process. This field is optional - if it is missing, Bastion will default to what you see above.  
   
